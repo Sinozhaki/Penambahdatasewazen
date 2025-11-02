@@ -1,112 +1,302 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sewa Linkedin Zen</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Inter Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        /* Custom styling to emulate LinkedIn's clean look and modern rounded aesthetic */
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #e8f0fe; /* Very light blue/grey background for a modern feel */
-        }
-        .linkedin-card {
-            background-color: #ffffff;
-            /* Prominent, modern shadow with large radius for depth */
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); 
-            border: 1px solid #e0e0e0; /* Subtle border */
-        }
-        .linkedin-blue {
-            color: #0a66c2; /* LinkedIn blue */
-        }
-        .linkedin-bg-blue {
-            background-color: #0a66c2;
-        }
-        .linkedin-bg-blue:hover {
-            background-color: #004182;
-        }
-        .form-input-container {
-            position: relative;
-            display: flex;
-            align-items: center;
-            border: 1px solid #e0e0e0;
-            border-radius: 0.75rem; /* rounded-xl */
-            padding: 0;
-            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-            background-color: #ffffff;
-        }
-        .form-input-container:focus-within {
-            border-color: #0a66c2;
-            box-shadow: 0 0 0 1px #0a66c2;
-        }
-        .form-input {
-            width: 100%;
-            padding: 0.75rem 0.75rem 0.75rem 0.5rem; /* Padding adjusted for icon */
-            border: none;
-            outline: none;
-            background: transparent;
-        }
-        .icon-wrapper {
-            padding: 0.75rem;
-            color: #6b7280; /* Gray 500 */
-        }
-        /* Stylish gradient for the warning box */
-        .stylish-warning {
-            background: linear-gradient(135deg, #ffedd5 0%, #fef3c7 100%); /* Light yellow-orange gradient */
-            border-left: 5px solid #f97316; /* Strong orange bar on the left */
-        }
-        
-        /* Custom style for Select boxes */
-        .custom-select-wrapper {
-             display: flex;
-             align-items: center;
-             border: 1px solid #e0e0e0;
-             border-radius: 0.75rem;
-             transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-             background-color: #ffffff;
-        }
-        .custom-select-wrapper:focus-within {
-            border-color: #0a66c2;
-            box-shadow: 0 0 0 1px #0a66c2;
-        }
-        .custom-select {
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            appearance: none;
-            outline: none; 
-            box-shadow: none;
-            flex-grow: 1;
-            padding: 0.75rem 0.75rem 0.75rem 0.5rem; 
-            border: none;
-            background-color: transparent;
-            cursor: pointer;
-            z-index: 10; 
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Rent Linkedin By Zen</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Load Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    /* Styling dasar */
+    body {
+      font-family: 'Inter', sans-serif;
+      /* LATAR BELAKANG: Menggunakan image url sesuai permintaan */
+      background-image: url('wallpaper.png'); 
+      background-attachment: fixed;
+      background-size: cover;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 24px;
+    }
 
-            /* --- FIX OVERFLOW/ELIPSIS --- */
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            /* --------------------------- */
+    .card {
+      /* Glassmorphism Effect */
+      background-color: rgba(255, 255, 255, 0.1); /* Latar belakang sangat transparan */
+      backdrop-filter: blur(15px); /* Efek blur kaca */
+      -webkit-backdrop-filter: blur(15px);
+      border: 1px solid rgba(255, 255, 255, 0.2); /* Border putih transparan */
+      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37); /* Bayangan yang lebih dramatis */
+      
+      padding: 40px;
+      border-radius: 20px; /* Lebih membulat */
+      max-width: 420px;
+      width: 100%;
+    }
+
+    /* Memastikan teks pada kartu terbaca (putih/terang) */
+    .card label, .card h1, .card p, .card h2 {
+        color: #f3f4f6; /* Teks sangat terang/putih */
+    }
+    .card strong {
+        color: #fca5a5; /* Penyorot merah muda agar kontras */
+    }
+
+    /* Input dan Select perlu background putih semi-transparan agar terbaca di atas blur */
+    .glass-input {
+      background-color: rgba(255, 255, 255, 0.85);
+      color: #1f2937; /* Teks gelap di dalam input */
+    }
+    
+    .glass-input.bg-gray-200 {
+        background-color: rgba(229, 231, 235, 0.9);
+    }
+
+    /* Styling Status Messages */
+    .status-success {
+        background-color: #d1fae5;
+        color: #065f46;
+        border: 1px solid #10b981;
+    }
+    .status-error {
+        background-color: #fee2e2;
+        color: #991b1b;
+        border: 1px solid #f87171;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ELEMEN AUDIO (Harus diletakkan di body) -->
+  <audio id="backgroundAudio" src="zen.mp3" preload="auto" loop></audio>
+
+  <!-- Halaman Selamat Datang (Tampil pertama) -->
+  <div id="welcomeScreen" class="card text-center">
+    <i data-lucide="sun" class="w-12 h-12 mx-auto text-yellow-300 mb-4" style="filter: drop-shadow(0 0 8px rgba(255, 255, 0, 0.8));"></i>
+    <h2 class="text-4xl font-extrabold mb-4 tracking-tighter">Selamat Datang!</h2>
+    <p class="text-lg font-light mb-8 text-gray-200">
+        Catat data sewa dengan baik dan benar! 
+    </p>
+
+    <!-- Tombol yang akan mengaktifkan musik dan navigasi -->
+    <button id="continueButton"
+            class="w-full py-3 bg-white hover:bg-gray-100 text-blue-700 font-bold rounded-xl shadow-lg transition duration-300 ease-in-out transform hover:scale-[1.02] focus:outline-none focus:ring-4 focus:ring-white focus:ring-opacity-50">
+      Lanjutkan ke Formulir
+    </button>
+  </div>
+
+  <!-- Formulir Utama (Tersembunyi awalnya) -->
+  <div id="mainFormContainer" class="card hidden">
+    <div class="text-center mb-8">
+        <i data-lucide="linkedin" class="w-10 h-10 mx-auto text-white mb-2" style="filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.5));"></i>
+        <h1 class="text-3xl font-extrabold tracking-tight">Rent Akun LinkedIn</h1>
+        <!-- Teks informasi penting -->
+        <p class="text-sm mt-2 font-medium">Catat email sewa anda dengan baik dan benar agar tidak terjadi <strong class="text-red-300">miss data</strong> dan informasi</p>
+    </div>
+
+    <form id="rentForm" class="space-y-6">
+      <div>
+        <label for="email" class="block text-sm font-semibold mb-1">Email:</label>
+        <input id="email" name="email" type="email" required placeholder="Masukkan alamat email Anda"
+               class="glass-input w-full px-4 py-2 border border-transparent rounded-xl focus:ring-white focus:border-white transition duration-200" />
+      </div>
+
+      <div>
+        <label for="whatsapp" class="block text-sm font-semibold mb-1">No WhatsApp:</label>
+        <input id="whatsapp" name="whatsapp" type="tel" required placeholder="Contoh: 085123456789"
+               class="glass-input w-full px-4 py-2 border border-transparent rounded-xl focus:ring-white focus:border-white transition duration-200" />
+      </div>
+
+      <div>
+        <label for="tanggal" class="block text-sm font-semibold mb-1">Tanggal Pendaftaran:</label>
+        <input id="tanggal" name="tanggal" type="text" readonly
+               class="glass-input w-full px-4 py-2 border border-transparent rounded-xl bg-gray-200 text-gray-700 cursor-not-allowed" />
+      </div>
+
+      <div>
+        <label for="statusAcc" class="block text-sm font-semibold mb-1">Status Akun:</label>
+        <select id="statusAcc" name="statusAcc"
+                class="glass-input w-full px-4 py-2 border border-transparent rounded-xl focus:ring-white focus:border-white transition duration-200 text-gray-700">
+            <option value="New Acc">New Acc</option>
+            <option value="Unrestrict">Unrestrict</option>
+            <option value="Old Acc">Old Acc</option>
+        </select>
+      </div>
+
+      <button type="submit"
+              class="w-full py-3 mt-4 bg-white hover:bg-gray-100 text-blue-700 font-bold rounded-xl shadow-lg transition duration-300 ease-in-out transform hover:scale-[1.02] focus:outline-none focus:ring-4 focus:ring-white focus:ring-opacity-50">
+        Kirim Data
+      </button>
+    </form>
+
+    <div id="status" aria-live="polite" class="mt-8 p-3 text-sm rounded-lg font-medium hidden"></div>
+  </div>
+
+  <script>
+    // Inisialisasi Lucide icons
+    lucide.createIcons();
+
+    // --- DOM Elements ---
+    const welcomeScreen = document.getElementById('welcomeScreen');
+    const mainFormContainer = document.getElementById('mainFormContainer');
+    const continueButton = document.getElementById('continueButton');
+    const backgroundAudio = document.getElementById('backgroundAudio');
+    
+    // --- Date Formatting (Dipertahankan) ---
+    const tanggalInput = document.getElementById('tanggal');
+    const date = new Date();
+    const hariArray = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+    const bulanArray = [
+      "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+      "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+    ];
+
+    const hari = hariArray[date.getDay()];
+    const tanggal = date.getDate();
+    const bulan = bulanArray[date.getMonth()];
+
+    // Set tanggal saat load (diperlukan untuk form utama)
+    tanggalInput.value = `${hari}, ${tanggal} ${bulan}`;
+
+    // --- Welcome Screen & Audio Logic ---
+    continueButton.addEventListener('click', () => {
+        // 1. Mulai Putar Musik
+        backgroundAudio.play().catch(error => {
+            // Error ini wajar jika browser memblokir autoplay, 
+            // tapi kita sudah mengaktifkannya via user interaction.
+            console.warn('Gagal memutar audio:', error);
+        });
+
+        // 2. Transisi ke Form Utama
+        welcomeScreen.classList.add('hidden');
+        mainFormContainer.classList.remove('hidden');
+    });
+
+    // --- Form Submission Logic (Dipertahankan) ---
+    const form = document.getElementById('rentForm');
+    const statusDiv = document.getElementById('status');
+    const jsonBinId = '6905803fae596e708f3baa25';
+    const masterKey = '$2a$10$ziNrwiYaAO5/AfgfNP218OKOtjLxTV6c7Zau9vLmygY35FQ36jlci';
+    const apiUrl = `https://api.jsonbin.io/v3/b/${jsonBinId}`;
+
+    function formatWA(number) {
+      // Fungsi untuk membersihkan dan memformat nomor WhatsApp ke standar internasional (+62...)
+      let clean = number.replace(/\D/g, '');
+      if (clean.startsWith('0')) {
+        clean = clean.slice(1);
+      }
+      if (!clean.startsWith('62')) {
+        clean = '62' + clean;
+      }
+      return '+' + clean;
+    }
+
+    // Fungsi fetch dengan Exponential Backoff
+    async function fetchWithRetry(url, options, maxRetries = 3) {
+        for (let i = 0; i < maxRetries; i++) {
+            try {
+                const response = await fetch(url, options);
+                if (response.status !== 429) { 
+                    return response;
+                }
+            } catch (error) {
+                // Network error, tunggu dan coba lagi
+            }
+            const delay = Math.pow(2, i) * 1000;
+            if (i < maxRetries - 1) {
+              await new Promise(resolve => setTimeout(resolve, delay));
+            }
         }
-        /* Style untuk panah kustom */
-        .select-arrow {
-            pointer-events: none; 
-            position: absolute;
-            right: 0.5rem;
-            color: #6b7280;
+        throw new Error("Gagal terhubung ke server setelah beberapa kali percobaan.");
+    }
+
+
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      statusDiv.textContent = 'Mengirim data...';
+      statusDiv.classList.remove('hidden', 'status-success', 'status-error');
+      statusDiv.classList.add('bg-gray-200', 'text-gray-700', 'border', 'border-gray-300');
+
+
+      const emailValue = document.getElementById('email').value.trim().toLowerCase();
+      const whatsappValue = formatWA(document.getElementById('whatsapp').value.trim());
+
+      try {
+        // 1. Ambil data lama
+        const getRes = await fetchWithRetry(`${apiUrl}/latest`, {
+          headers: {
+            'X-Master-Key': masterKey
+          }
+        });
+
+        if (!getRes.ok) {
+           throw new Error('Gagal mengambil data lama: ' + getRes.status);
         }
-        
-        /* --- NOTIFICATION TOAST CSS (Optimized) --- */
-        .notification-container {
-            position: fixed;
-            bottom: 0; /* Start position: bottom of the screen */
-            left: 50%;
-            transform: translateX(-50%); /* Center horizontally */
-            z-index: 1000;
+
+        const existingData = await getRes.json();
+        let records = [];
+
+        if (existingData && existingData.record) {
+          records = Array.isArray(existingData.record) ? existingData.record : [existingData.record];
+        }
+
+        // 2. Cek Duplikasi Email
+        const duplicate = records.find(
+          r => r.email && r.email.toLowerCase() === emailValue
+        );
+
+        if (duplicate) {
+          statusDiv.textContent = 'Email sudah terdaftar, silakan gunakan email lain.';
+          statusDiv.className = 'mt-8 p-3 text-sm status-error';
+          return;
+        }
+
+        // 3. Buat Payload baru
+        const payload = {
+          email: emailValue,
+          whatsapp: whatsappValue,
+          tanggal: tanggalInput.value,
+          statusAcc: document.getElementById('statusAcc').value, 
+          submittedAt: new Date().toISOString()
+        };
+
+        // Tambahkan data baru ke array lama
+        records.push(payload);
+
+        // 4. Kirim data yang diperbarui (PUT)
+        const res = await fetchWithRetry(apiUrl, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Master-Key': masterKey
+          },
+          body: JSON.stringify(records)
+        });
+
+        if (!res.ok) {
+          let errorText = 'Kesalahan jaringan atau server.';
+          try {
+              errorText = await res.text();
+          } catch {}
+          throw new Error('Gagal mengirim data: ' + res.status + ' - ' + errorText);
+        }
+
+        statusDiv.textContent = 'Permintaan berhasil dikirim. Kami akan segera menghubungi Anda.';
+        statusDiv.className = 'mt-8 p-3 text-sm status-success';
+        form.reset();
+        // Set tanggal kembali setelah reset
+        tanggalInput.value = `${hari}, ${tanggal} ${bulan}`;
+
+      } catch (err) {
+        statusDiv.textContent = 'Terjadi kesalahan: ' + err.message;
+        statusDiv.className = 'mt-8 p-3 text-sm status-error';
+      }
+    });
+  </script>
+</body>
+</html>
             max-width: 90vw;
             min-width: 300px;
             pointer-events: none; /* Disable interaction when hidden */
