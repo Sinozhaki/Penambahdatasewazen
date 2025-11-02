@@ -3,345 +3,578 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DATA SEWA BY ZEN</title>
-    <!-- Memuat Tailwind CSS -->
+    <title>Sewa Linkedin Zen</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Memuat font Inter -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        /* Mengatur font default dan gradient background */
+        /* Custom styling to emulate LinkedIn's clean look and modern rounded aesthetic */
         body {
             font-family: 'Inter', sans-serif;
-            /* Gradient Biru LinkedIn ke Putih yang lebih halus */
-            background: linear-gradient(to bottom right, #0077B5, #eaf4ff, #FFFFFF);
+            background-color: #e8f0fe; /* Very light blue/grey background for a modern feel */
+        }
+        .linkedin-card {
+            background-color: #ffffff;
+            /* Prominent, modern shadow with large radius for depth */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); 
+            border: 1px solid #e0e0e0; /* Subtle border */
+        }
+        .linkedin-blue {
+            color: #0a66c2; /* LinkedIn blue */
+        }
+        .linkedin-bg-blue {
+            background-color: #0a66c2;
+        }
+        .linkedin-bg-blue:hover {
+            background-color: #004182;
+        }
+        .form-input-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            border: 1px solid #e0e0e0;
+            border-radius: 0.75rem; /* rounded-xl */
+            padding: 0;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+            background-color: #ffffff;
+        }
+        .form-input-container:focus-within {
+            border-color: #0a66c2;
+            box-shadow: 0 0 0 1px #0a66c2;
+        }
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 0.75rem 0.75rem 0.5rem; /* Padding adjusted for icon */
+            border: none;
+            outline: none;
+            background: transparent;
+        }
+        .icon-wrapper {
+            padding: 0.75rem;
+            color: #6b7280; /* Gray 500 */
+        }
+        /* Stylish gradient for the warning box */
+        .stylish-warning {
+            background: linear-gradient(135deg, #ffedd5 0%, #fef3c7 100%); /* Light yellow-orange gradient */
+            border-left: 5px solid #f97316; /* Strong orange bar on the left */
         }
         
-        /* Style tambahan untuk select agar terlihat konsisten */
-        select {
+        /* Custom style for Select boxes */
+        .custom-select-wrapper {
+             display: flex;
+             align-items: center;
+             border: 1px solid #e0e0e0;
+             border-radius: 0.75rem;
+             transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+             background-color: #ffffff;
+        }
+        .custom-select-wrapper:focus-within {
+            border-color: #0a66c2;
+            box-shadow: 0 0 0 1px #0a66c2;
+        }
+        .custom-select {
             -webkit-appearance: none;
             -moz-appearance: none;
             appearance: none;
+            outline: none; 
+            box-shadow: none;
+            flex-grow: 1;
+            padding: 0.75rem 0.75rem 0.75rem 0.5rem; 
+            border: none;
+            background-color: transparent;
+            cursor: pointer;
+            z-index: 10; 
+
+            /* --- FIX OVERFLOW/ELIPSIS --- */
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            /* --------------------------- */
         }
+        /* Style untuk panah kustom */
+        .select-arrow {
+            pointer-events: none; 
+            position: absolute;
+            right: 0.5rem;
+            color: #6b7280;
+        }
+        
+        /* --- NOTIFICATION TOAST CSS (Optimized) --- */
+        .notification-container {
+            position: fixed;
+            bottom: 0; /* Start position: bottom of the screen */
+            left: 50%;
+            transform: translateX(-50%); /* Center horizontally */
+            z-index: 1000;
+            max-width: 90vw;
+            min-width: 300px;
+            pointer-events: none; /* Disable interaction when hidden */
+        }
+        .notification-box {
+            background-color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 0.75rem; /* rounded-xl */
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            /* Initial state: Hidden below the view (2rem margin + 100% of its own height) */
+            transform: translateY(calc(100% + 2rem)); 
+            opacity: 0;
+            /* Smooth slide animation (400ms) */
+            transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.4s ease;
+            pointer-events: auto; /* Re-enable interaction for the box itself */
+        }
+        .notification-box.show {
+            /* Final state: Visible (2rem from the bottom edge of the screen) */
+            transform: translateY(-2rem); 
+            opacity: 1;
+        }
+        /* --- END NOTIFICATION TOAST CSS --- */
+        
+        /* CSS Kustom untuk Efek Kedip Tombol */
+        .animate-pulsing-once {
+             animation: pulse-once 2s infinite cubic-bezier(0.4, 0, 0.6, 1);
+        }
+
+        @keyframes pulse-once {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.8;
+            }
+        }
+        
+        /* CSS Kustom untuk Efek Floating pada Card Perhatian */
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0);
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            }
+            50% {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            }
+            100% {
+                transform: translateY(0);
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            }
+        }
+
     </style>
 </head>
-<!-- UBAH: Menambah flex-col agar teks baru bisa diletakkan di bawah -->
-<body class="min-h-screen flex flex-col items-center justify-center p-4 py-8">
+<body class="flex items-center justify-center min-h-screen p-4">
 
-    <!-- Kontainer Utama -->
-    <div class="bg-white p-8 md:p-10 rounded-2xl shadow-2xl w-full max-w-md">
+    <!-- Main Card Container (Centered and highly rounded) -->
+    <div class="linkedin-card w-full max-w-lg 2xl:max-w-md rounded-[2rem] overflow-hidden">
         
-        <!-- Judul dan Deskripsi -->
-        <div class="text-center">
-            <h1 class="text-3xl font-bold text-gray-800">
-                DATA SEWA BY ZEN
-            </h1>
-            <p class="mt-2 text-sm text-gray-500">
-                isi data linkedin dan no WhatsApp yang sama!
-            </p>
+        <!-- Header Section -->
+        <div class="bg-white p-8 text-center border-b border-gray-100">
+            <!-- LinkedIn Icon SVG -->
+            <svg class="w-10 h-10 mx-auto text-blue-700" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M22.23 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.46c.98 0 1.77-.77 1.77-1.72V1.72C24 .77 23.21 0 22.23 0zM7.17 20.46H3.59V8.67h3.58v11.79zM5.38 7.15c-1.15 0-2.08-.94-2.08-2.1S4.23 2.97 5.38 2.97c1.15 0 2.08.94 2.08 2.08 0 1.15-.93 2.08-2.08 2.08zM20.42 20.46h-3.58v-6c0-1.43-.51-2.39-1.79-2.39-.97 0-1.55.66-1.79 1.28-.09.22-.12.52-.12.82v6.29h-3.58s.05-10.74 0-11.79h3.58v1.54c.51-.78 1.42-1.89 3.22-1.89 2.34 0 4.09 1.54 4.09 4.86v7.28z"/>
+            </svg>
+            <h1 class="text-3xl font-extrabold text-gray-900 mt-2">Sewa Linkedin Zen</h1>
         </div>
 
-        <!-- Separator/Garis Pembatas -->
-        <hr class="my-6 border-gray-100">
+        <!-- Stylish Warning and Separator -->
+        <div class="p-8 pb-4">
+            <!-- Tambahkan kelas animate-float di sini -->
+            <div class="stylish-warning p-4 rounded-xl shadow-md flex items-start space-x-3 animate-float">
+                <!-- Icon: Alert/Warning -->
+                <svg class="w-6 h-6 text-orange-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.332 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                
+                <p class="text-sm font-semibold text-orange-800 leading-relaxed">
+                    Perhatian: <span class="font-extrabold">Pastikan Anda mengisi data dengan benar dan akurat</span> untuk menghindari miskomunikasi atau <span class="text-red-700">miss data</span> dalam sistem Zen.
+                </p>
+            </div>
+        </div>
 
-        <!-- Form Input -->
-        <!-- Menggunakan space-y-5 untuk jarak vertikal yang konsisten -->
-        <form id="sewaForm" class="space-y-5">
+        <!-- Form Section -->
+        <form id="zenForm" class="px-8 pb-8 space-y-6">
             
-            <!-- Kolom Email dengan Ikon -->
+            <!-- 1. Email Input -->
             <div>
-                <label for="email" class="block text-sm font-medium text-gray-700 mb-1.5">Email</label>
-                <div class="relative rounded-lg shadow-sm">
-                    <!-- Ikon Envelope -->
-                    <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
-                        <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                            <path d="M3 4a2 2 0 00-2 2v1.161l8.441 4.221a1.25 1.25 0 001.118 0L19 7.161V6a2 2 0 00-2-2H3z" />
-                            <path d="M19 8.839l-7.77 3.885a2.75 2.75 0 01-2.46 0L1 8.839V14a2 2 0 002 2h14a2 2 0 002-2V8.839z" />
-                        </svg>
-                    </div>
-                    <!-- Input -->
-                    <input type="email" id="email" name="email" required
-                           class="block w-full rounded-lg border-0 bg-gray-50 py-3 pl-11 pr-4 text-gray-900 ring-1 ring-inset ring-gray-200 placeholder:text-gray-400 focus:bg-white focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6 transition duration-150">
+                <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">Email</label>
+                <div class="form-input-container">
+                    <span class="icon-wrapper">
+                        <!-- Email Icon (Lucide: Mail) -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mail"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.83 1.83 0 0 1-2.06 0L2 7"/></svg>
+                    </span>
+                    <input type="email" id="email" name="email" required 
+                           placeholder="Masukkan email Linkedin anda"
+                           class="form-input">
                 </div>
             </div>
 
-            <!-- Kolom No WhatsApp dengan Ikon -->
+            <!-- 2. WhatsApp Input -->
             <div>
-                <label for="whatsapp" class="block text-sm font-medium text-gray-700 mb-1.5">Nomor WhatsApp (+62)</label>
-                <div class="relative rounded-lg shadow-sm">
-                     <!-- Ikon Telepon -->
-                    <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
-                         <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                           <path fill-rule="evenodd" d="M2 3.5A1.5 1.5 0 013.5 2h1.148a1.5 1.5 0 011.465 1.175l.716 3.223a1.5 1.5 0 01-1.052 1.767l-.933.267c-.41.117-.643.555-.48.95a11.542 11.542 0 006.254 6.254c.395.163.833-.07.95-.48l.267-.933a1.5 1.5 0 011.767-1.052l3.223.716A1.5 1.5 0 0118 15.352V16.5a1.5 1.5 0 01-1.5 1.5A15.5 15.5 0 012 3.5z" clip-rule="evenodd" />
-                         </svg>
-                    </div>
-                    <!-- Input -->
-                    <input type="tel" id="whatsapp" name="whatsapp" required
-                           pattern="^\+62\d{9,15}$"
-                           title="Wajib diawali dengan +62, contoh: +628123456789"
-                           placeholder="+628123456789"
-                           class="block w-full rounded-lg border-0 bg-gray-50 py-3 pl-11 pr-4 text-gray-900 ring-1 ring-inset ring-gray-200 placeholder:text-gray-400 focus:bg-white focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6 transition duration-150">
+                <label for="whatsapp" class="block text-sm font-semibold text-gray-700 mb-2">No WhatsApp</label>
+                <div class="form-input-container">
+                    <span class="icon-wrapper">
+                        <!-- WhatsApp/Phone Icon (Lucide: Phone) -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-phone"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.63A2 2 0 0 1 3.08 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                    </span>
+                    <input type="tel" id="whatsapp" name="whatsapp" required 
+                           value="+62"
+                           placeholder="Masukkan nomor Anda setelah +62"
+                           class="form-input">
                 </div>
             </div>
 
-            <!-- Select Day (Full-Width) -->
+            <!-- 3. Status (Read-Only) -->
             <div>
-                <label for="day" class="block text-sm font-medium text-gray-700 mb-1.5">Pilih Hari (Day)</label>
-                <div class="relative">
-                    <select id="day" name="day" required
-                            class="block w-full rounded-lg border-0 bg-gray-50 py-3 px-4 text-gray-900 ring-1 ring-inset ring-gray-200 focus:bg-white focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6 transition duration-150">
-                        <!-- Opsi Day akan diisi oleh JavaScript -->
-                    </select>
-                     <!-- Ikon Chevron -->
-                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-                        <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                          <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 011.06 0L10 11.94l3.72-3.72a.75.75 0 111.06 1.06l-4.25 4.25a.75.75 0 01-1.06 0L5.22 9.28a.75.75 0 010-1.06z" clip-rule="evenodd" />
-                        </svg>
-                    </div>
+                <label for="status" class="block text-sm font-semibold text-gray-700 mb-2">Status</label>
+                <div class="form-input-container bg-gray-50 border-gray-200 cursor-not-allowed">
+                    <span class="icon-wrapper">
+                        <!-- Status Icon (Lucide: User Check) -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-check"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M16 11l2 2 4-4"/></svg>
+                    </span>
+                    <input type="text" id="status" name="status" value="new acc" readonly 
+                           class="form-input text-gray-500 font-medium bg-gray-50 cursor-not-allowed">
                 </div>
             </div>
             
-            <!-- Select Week (Full-Width) -->
-            <div>
-                <label for="week" class="block text-sm font-medium text-gray-700 mb-1.5">Pilih Minggu (Week)</label>
-                <div class="relative">
-                    <select id="week" name="week" required
-                            class="block w-full rounded-lg border-0 bg-gray-50 py-3 px-4 text-gray-900 ring-1 ring-inset ring-gray-200 focus:bg-white focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6 transition duration-150">
-                        <!-- Opsi Week akan diisi oleh JavaScript -->
-                    </select>
-                     <!-- Ikon Chevron -->
-                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-                        <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                          <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 011.06 0L10 11.94l3.72-3.72a.75.75 0 111.06 1.06l-4.25 4.25a.75.75 0 01-1.06 0L5.22 9.28a.75.75 0 010-1.06z" clip-rule="evenodd" />
-                        </svg>
+            <!-- Day and Week Selectors (OPTIMIZED) -->
+            <div class="grid grid-cols-2 gap-4">
+                <!-- 4. Day Selector -->
+                <div>
+                    <label for="day" class="block text-sm font-semibold text-gray-700 mb-2">Pilih Hari (Day)</label>
+                    <div class="custom-select-wrapper relative">
+                         <span class="icon-wrapper">
+                             <!-- Day Icon (Lucide: Calendar) -->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+                        </span>
+                        <select id="day" name="day" required class="custom-select">
+                            <option value="" disabled selected>Pilih Hari...</option>
+                            <option value="Kamis">Kamis</option>
+                            <option value="Jumat">Jumat</option>
+                            <option value="Sabtu">Sabtu</option>
+                            <option value="Minggu">Minggu</option>
+                            <option value="Senin">Senin</option>
+                            <option value="Selasa">Selasa</option>
+                        </select>
+                         <!-- Custom Arrow (Absolute position outside the select element) -->
+                         <span class="select-arrow top-1/2 -translate-y-1/2 p-3 absolute right-0">
+                             <!-- Down Arrow -->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down"><path d="m6 9 6 6 6-6"/></svg>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- 5. Week Selector -->
+                <div>
+                    <label for="week" class="block text-sm font-semibold text-gray-700 mb-2">Week</label>
+                    <div class="custom-select-wrapper relative">
+                         <span class="icon-wrapper">
+                             <!-- Week/Range Icon (Lucide: Clock) -->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                        </span>
+                        <select id="week" name="week" required class="custom-select">
+                            <option value="" disabled selected>Pilih Pekan...</option>
+                            <!-- Options will be generated by JavaScript below -->
+                        </select>
+                        <!-- Custom Arrow (Absolute position outside the select element) -->
+                         <span class="select-arrow top-1/2 -translate-y-1/2 p-3 absolute right-0">
+                             <!-- Down Arrow -->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down"><path d="m6 9 6 6 6-6"/></svg>
+                        </span>
                     </div>
                 </div>
             </div>
 
-            <!-- Tombol Kirim -->
-            <div class="pt-2">
-                <button type="submit" id="submitButton"
-                        class="w-full flex justify-center items-center py-3 px-4 rounded-lg shadow-lg text-base font-medium text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-300 ease-in-out transform hover:-translate-y-0.5 disabled:opacity-60">
-                    <!-- SVG Spinner untuk loading -->
-                    <svg id="loadingSpinner" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    <span id="buttonText">Kirim Ke Database</span>
-                </button>
-            </div>
+            <!-- Message Box for Feedback (Hidden, only for fallback) -->
+            <div id="messageBox" class="p-4 mt-4 text-center rounded-xl font-medium hidden transition-all duration-300" role="alert"></div>
+
+            <!-- Submit Button -->
+            <button type="submit" id="submitButton"
+                    class="w-full text-white font-bold py-3 px-4 rounded-xl linkedin-bg-blue shadow-lg shadow-blue-500/50 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-blue-300/80 transform hover:scale-[1.01] flex items-center justify-center animate-pulsing-once">
+                <span id="buttonText">Kirim Ke Database Zen</span>
+                <span id="loadingSpinner" class="hidden animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></span>
+            </button>
         </form>
-
-        <!-- Pesan Status (Success/Error) -->
-        <div id="messageBox" class="mt-4 p-4 rounded-lg text-center text-sm font-medium hidden">
-            <!-- Pesan akan diisi oleh JavaScript -->
-        </div>
-
     </div>
 
-    <!-- --- KETERANGAN BARU DITAMBAHKAN DI SINI --- -->
-    <p class="mt-6 text-center text-sm text-gray-700 font-medium px-4">
-        yang mau claim DP 1$ konfirmasi ke admin Zen
-    </p>
-    <!-- --- AKHIR KETERANGAN BARU --- -->
+    <!-- NOTIFICATION TOAST CONTAINER (FIXED) -->
+    <div id="notificationContainer" class="notification-container">
+        <div id="notificationBox" class="notification-box">
+            <!-- Content will be injected by JavaScript -->
+        </div>
+    </div>
+    <!-- END NOTIFICATION TOAST -->
+
 
     <script>
-        // --- KONFIGURASI JSONBIN ---
-        const JSONBIN_BIN_ID = "6905803fae596e708f3baa25";
-        const JSONBIN_API_KEY = "$2a$10$ziNrwiYaAO5/AfgfNP218OKOtjLxTV6c7Zau9vLmygY35FQ36jlci";
-        const JSONBIN_READ_URL = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`;
-        const JSONBIN_WRITE_URL = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`;
+        // Konfigurasi JSONBin
+        const BIN_ID = '6905803fae596e708f3baa25';
+        const API_KEY = '$2a$10$ziNrwiYaAO5/AfgfNP218OKOtjLxTV6c7Zau9vLmygY35FQ36jlci'; 
+        const API_URL = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
         
-        // --- ELEMEN DOM ---
-        const form = document.getElementById('sewaForm');
-        const emailInput = document.getElementById('email');
-        const whatsappInput = document.getElementById('whatsapp');
-        const daySelect = document.getElementById('day');
-        const weekSelect = document.getElementById('week');
-        
+        const form = document.getElementById('zenForm');
         const submitButton = document.getElementById('submitButton');
-        const buttonText = document.getElementById('buttonText');
-        const loadingSpinner = document.getElementById('loadingSpinner');
-        const messageBox = document.getElementById('messageBox');
-
-        // --- FUNGSI UNTUK MENGISI OPSI SELECT ---
-        function populateSelectOptions() {
-            // Tambahkan opsi placeholder
-            const placeholderDay = document.createElement('option');
-            placeholderDay.value = "";
-            placeholderDay.textContent = "Pilih Hari";
-            placeholderDay.disabled = true;
-            placeholderDay.selected = true;
-            daySelect.appendChild(placeholderDay);
-
-            const placeholderWeek = document.createElement('option');
-            placeholderWeek.value = "";
-            placeholderWeek.textContent = "Pilih Minggu";
-            placeholderWeek.disabled = true;
-            placeholderWeek.selected = true;
-            weekSelect.appendChild(placeholderWeek);
-
-            // Isi Day 1 - 6 (Sesuai permintaan)
-            const dayNames = [
-                "Day 1 (Kamis)",
-                "Day 2 (Jumat)",
-                "Day 3 (Sabtu)",
-                "Day 4 (Minggu)",
-                "Day 5 (Senin)",
-                "Day 6 (Selasa)"
-            ];
-
-            // Loop melalui array dayNames
-            dayNames.forEach(name => {
+        const whatsappInput = document.getElementById('whatsapp');
+        const whatsappDefault = "+62";
+        
+        // Elemen Notifikasi
+        const notificationContainer = document.getElementById('notificationContainer');
+        const notificationBox = document.getElementById('notificationBox');
+        
+        // Durasi transisi CSS
+        const TRANSITION_DURATION = 400; 
+        
+        // --- Inisialisasi Opsi Week ---
+        const weekSelect = document.getElementById('week');
+        if (weekSelect) {
+            for (let i = 5; i <= 20; i++) {
                 const option = document.createElement('option');
-                option.value = name; // Nilai yang dikirim, cth: "Day 1 (Kamis)"
-                option.textContent = name; // Teks yang ditampilkan
-                daySelect.appendChild(option);
-            });
-
-            // Isi Week 6 - 50
-            for (let i = 6; i <= 50; i++) {
-                const option = document.createElement('option');
-                option.value = `Week ${i}`;
+                option.value = `week ${i}`;
                 option.textContent = `Week ${i}`;
                 weekSelect.appendChild(option);
             }
         }
+        // --------------------------------
 
-        // --- FUNGSI HELPER ---
-        function setLoading(isLoading) {
-            submitButton.disabled = isLoading;
-            if (isLoading) {
-                buttonText.textContent = 'Mengirim...';
-                loadingSpinner.classList.remove('hidden');
-            } else {
-                buttonText.textContent = 'Kirim Ke Database';
-                loadingSpinner.classList.add('hidden');
-            }
-        }
-
-        function showMessage(message, type) {
-            messageBox.textContent = message;
-            messageBox.classList.remove('hidden', 'bg-green-100', 'text-green-700', 'bg-red-100', 'text-red-700');
+        // FUNGSI NOTIFIKASI
+        const hideNotification = () => {
+            // Apply slide-down animation and fade out
+            notificationBox.classList.remove('show');
             
-            if (type === 'success') {
-                messageBox.classList.add('bg-green-100', 'text-green-700');
-            } else if (type === 'error') {
-                messageBox.classList.add('bg-red-100', 'text-red-700');
-            }
-
-            // Sembunyikan pesan setelah 5 detik
+            // Cleanup: Wait for the transition to finish (400ms)
             setTimeout(() => {
-                messageBox.classList.add('hidden');
-            }, 5000);
-        }
+                submitButton.disabled = false;
+                notificationBox.innerHTML = ''; 
+            }, TRANSITION_DURATION); 
+        };
 
-        // --- EVENT LISTENER UNTUK SUBMIT FORM ---
-        form.addEventListener('submit', async function(event) {
-            event.preventDefault();
+        const showNotification = (htmlContent) => {
+            notificationBox.innerHTML = htmlContent;
             
-            // Validasi tambahan untuk select
-            if (!daySelect.value || !weekSelect.value) {
-                showMessage('Harap pilih Hari dan Minggu.', 'error');
-                return;
+            // Use requestAnimationFrame to ensure smooth transition start
+            requestAnimationFrame(() => {
+                 // Trigger slide-up animation
+                notificationBox.classList.add('show');
+            });
+        };
+
+        const showLoading = () => {
+            const loadingHTML = `
+                <div class="flex items-center space-x-3">
+                    <div class="animate-spin h-5 w-5 border-2 border-blue-500 border-t-transparent rounded-full"></div>
+                    <p class="text-md font-semibold text-gray-700">Mengirim Data...</p>
+                </div>
+            `;
+            showNotification(loadingHTML);
+            submitButton.disabled = true;
+        };
+
+        // showSuccess: auto-close setelah 3 detik total (JEDA BACA TERJAMIN)
+        const showSuccess = () => {
+            const successHTML = `
+                <div class="flex items-center space-x-3">
+                    <!-- Checkmark Icon -->
+                    <svg class="w-6 h-6 text-green-500 flex-shrink-0 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <p class="text-md font-semibold text-gray-800">Data terkirim</p>
+                </div>
+            `;
+            showNotification(successHTML);
+            
+            // SET TIMEOUT: Menutup notifikasi setelah 3000ms (3 detik)
+            setTimeout(hideNotification, 3000);
+        };
+
+        // showDuplicateAlert: Manual close (JEDA BACA TERJAMIN)
+        const showDuplicateAlert = (email) => {
+             const duplicateHTML = `
+                <div class="flex items-center justify-between space-x-4">
+                    <div class="flex items-center space-x-3">
+                        <!-- Alert Icon -->
+                        <svg class="w-6 h-6 text-red-500 flex-shrink-0 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.332 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                        <p class="text-md font-semibold text-red-600">🚨 Data Sudah Ada</p>
+                    </div>
+                    <!-- Tombol Tutup Manual -->
+                    <button id="closeNotificationButton" class="text-gray-500 hover:text-gray-700 transition-colors focus:outline-none">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </div>
+            `;
+            showNotification(duplicateHTML);
+            // Menambahkan listener secara eksplisit ke tombol Tutup
+            document.getElementById('closeNotificationButton').addEventListener('click', hideNotification);
+        };
+
+
+        // showError: Manual close (JEDA BACA TERJAMIN)
+        const showError = (message) => {
+            const errorHTML = `
+                 <div class="flex items-center justify-between space-x-4">
+                    <div class="flex items-center space-x-3">
+                        <!-- Error Icon -->
+                        <svg class="w-6 h-6 text-red-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <p class="text-md font-semibold text-red-600">Gagal Kirim Data</p>
+                    </div>
+                    <!-- Tombol Tutup Manual -->
+                    <button id="closeNotificationButton" class="text-gray-500 hover:text-gray-700 transition-colors focus:outline-none">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </div>
+            `;
+            showNotification(errorHTML);
+            // Menambahkan listener secara eksplisit ke tombol Tutup
+            document.getElementById('closeNotificationButton').addEventListener('click', hideNotification);
+        };
+        
+        // Fungsi utilitas untuk logika retry dengan exponential backoff (TIDAK BERUBAH)
+        const fetchWithRetry = async (url, options, maxRetries = 3) => {
+            for (let i = 0; i < maxRetries; i++) {
+                try {
+                    const response = await fetch(url, options);
+                    if (response.status === 429) {
+                        if (i < maxRetries - 1) {
+                            const delay = Math.pow(2, i) * 1000 + Math.random() * 500;
+                            await new Promise(resolve => setTimeout(resolve, delay));
+                            continue;
+                        }
+                    }
+                    if (!response.ok) {
+                        let errorBody = await response.text();
+                        try {
+                            const errorJson = JSON.parse(errorBody);
+                            throw new Error(`HTTP Error ${response.status}: ${errorJson.message || errorBody}`);
+                        } catch (e) {
+                            throw new Error(`HTTP Error ${response.status}: ${response.statusText}. Response: ${errorBody.substring(0, 100)}`);
+                        }
+                    }
+                    return response;
+                } catch (error) {
+                    console.error(`Fetch attempt ${i + 1} failed:`, error.message);
+                    if (i < maxRetries - 1) {
+                        const delay = Math.pow(2, i) * 1000 + Math.random() * 500;
+                        await new Promise(resolve => setTimeout(resolve, delay));
+                    } else {
+                        throw error;
+                    }
+                }
             }
+        };
+
+        // --- LOGIKA WHATSAPP INPUT --- (TIDAK BERUBAH)
+        const handleWhatsappInput = (e) => {
+            if (!e.target.value.startsWith(whatsappDefault)) {
+                e.target.value = whatsappDefault;
+            }
+        };
+
+        const handleWhatsappKeydown = (e) => {
+            const cursorPosition = e.target.selectionStart;
+            if (e.key === 'Backspace' && cursorPosition <= whatsappDefault.length) {
+                e.preventDefault();
+            }
+            if (e.key === 'Delete' && cursorPosition < whatsappDefault.length) {
+                 e.preventDefault();
+            }
+        };
+
+        const handleWhatsappFocus = (e) => {
+            if (e.target.value.length < whatsappDefault.length || e.target.selectionStart < whatsappDefault.length) {
+                e.target.setSelectionRange(whatsappDefault.length, whatsappDefault.length);
+            }
+        };
+        
+        whatsappInput.addEventListener('input', handleWhatsappInput);
+        whatsappInput.addEventListener('keydown', handleWhatsappKeydown);
+        whatsappInput.addEventListener('focus', handleWhatsappFocus);
+        // --- END LOGIKA WHATSAPP INPUT ---
+
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
             
-            setLoading(true);
-            messageBox.classList.add('hidden');
+            const formData = new FormData(form);
+            const data = {};
+            formData.forEach((value, key) => data[key] = value);
+            
+            // 1. Validasi WA dan Hapus Efek Kedip Tombol
+            if (data.whatsapp === whatsappDefault) {
+                 showError('Silakan masukkan nomor WhatsApp Anda setelah +62.');
+                 return; 
+            }
+            submitButton.classList.remove('animate-pulsing-once'); 
 
-            // Ambil email baru dan konversi ke lowercase untuk pengecekan
-            const newEmailLower = emailInput.value.toLowerCase();
+            // Tampilkan notifikasi loading
+            showLoading(); 
 
-            // 1. Buat objek data baru
-            const newData = {
-                email: emailInput.value,
-                whatsapp: whatsappInput.value,
-                tanggal_sewa: `${daySelect.value}, ${weekSelect.value}`,
-                timestamp: new Date().toISOString()
-            };
-
+            // Tambahkan metadata yang diperlukan
+            data.timestamp = new Date().toISOString();
+            
             try {
-                // 2. Baca data yang ada (GET)
-                const readResponse = await fetch(JSONBIN_READ_URL, {
+                // Simulasi waktu tunggu loading 1 detik
+                await new Promise(resolve => setTimeout(resolve, 1000));
+
+                // 2. GET data saat ini dari bin (untuk validasi duplikasi)
+                const getOptions = {
                     method: 'GET',
                     headers: {
-                        'X-Master-Key': JSONBIN_API_KEY
+                        'X-Master-Key': API_KEY,
                     }
-                });
+                };
 
-                if (!readResponse.ok) {
-                    throw new Error(`Gagal membaca data dari JSONBin (Status: ${readResponse.status})`);
-                }
-
-                const binData = await readResponse.json();
+                const getResponse = await fetchWithRetry(API_URL + '/latest', getOptions);
+                const currentData = await getResponse.json();
                 
-                // JSONBin v3 membungkus data dalam properti 'record'
-                const currentData = binData.record || binData; 
+                let users = Array.isArray(currentData.record.users) ? currentData.record.users : [];
+                
+                // 3. VALIDASI DUPLIKASI EMAIL
+                const emailExists = users.some(user => user.email.toLowerCase() === data.email.toLowerCase());
 
-                // Pastikan formatnya benar
-                if (!currentData.users || !Array.isArray(currentData.users)) {
-                    console.error("Format data di JSONBin salah. Inisialisasi ulang dengan: {\"users\": []}");
-                    // Jika bin kosong atau format salah, kita buat array baru
-                    currentData.users = [];
+                if (emailExists) {
+                    hideNotification(); // Sembunyikan loading
+                    showDuplicateAlert(data.email); // Tampilkan alert duplikasi (Manual Close)
+                    return; // Hentikan proses
                 }
 
-                // --- LOGIKA CEK DUPLIKAT EMAIL ---
-                let isDuplicate = false;
-                if (currentData.users.length > 0) {
-                    // Gunakan .some() untuk mengecek apakah ada email yang sama (case-insensitive)
-                    isDuplicate = currentData.users.some(user => 
-                        user.email && user.email.toLowerCase() === newEmailLower
-                    );
-                }
+                // 4. Tambahkan data pengguna baru (Jika TIDAK DUPLIKASI)
+                users.push(data);
+                
+                const updatedRecord = { users: users };
 
-                if (isDuplicate) {
-                    // Jika duplikat, tampilkan pesan error dan hentikan proses
-                    showMessage('Data sudah ada', 'error');
-                    setLoading(false); // Matikan loading
-                    return; // Hentikan eksekusi fungsi
-                }
-                // --- AKHIR LOGIKA CEK DUPLIKAT ---
-
-                // Jika lolos pengecekan duplikat, lanjutkan:
-                // 3. Modifikasi data (tambahkan data baru)
-                currentData.users.push(newData);
-
-                // 4. Tulis kembali data (PUT)
-                const writeResponse = await fetch(JSONBIN_WRITE_URL, {
+                // 5. PUT (Update) data yang telah dimodifikasi kembali ke bin
+                const putOptions = {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-Master-Key': JSONBIN_API_KEY
+                        'X-Master-Key': API_KEY,
                     },
-                    body: JSON.stringify(currentData) // Kirim seluruh objek yang sudah dimodifikasi
-                });
+                    body: JSON.stringify(updatedRecord)
+                };
 
-                if (!writeResponse.ok) {
-                    throw new Error(`Gagal menulis data ke JSONBin (Status: ${writeResponse.status})`);
-                }
+                await fetchWithRetry(API_URL, putOptions);
 
-                // 5. Handle Sukses
-                showMessage('Data berhasil dikirim!', 'success');
-                form.reset(); // Kosongkan form
+                // Sembunyikan loading (instan)
+                hideNotification(); 
+                // Tampilkan success (Auto-Close 3 detik)
+                showSuccess(); 
+
+                form.reset(); // Kosongkan formulir setelah sukses
+                document.getElementById('status').value = 'new acc'; // Reset field readonly
+                whatsappInput.value = whatsappDefault; // Reset WhatsApp input ke +62
                 
-                // Reset select ke placeholder
-                daySelect.selectedIndex = 0;
-                weekSelect.selectedIndex = 0;
-
             } catch (error) {
-                console.error('Terjadi kesalahan:', error);
-                showMessage(`Terjadi kesalahan: ${error.message}`, 'error');
+                console.error('Error saat submit data:', error);
+                // Sembunyikan loading (instan)
+                hideNotification(); 
+                // Tampilkan error (Manual Close)
+                showError('Terdapat masalah saat mengirim data. Coba lagi. Detail: ' + error.message.split('\n')[0]);
             } finally {
-                setLoading(false);
+                // Tambahkan kembali efek kedip setelah proses selesai/gagal
+                setTimeout(() => {
+                    submitButton.classList.add('animate-pulsing-once');
+                }, 500); 
             }
         });
-
-        // --- INISIALISASI ---
-        // Panggil fungsi untuk mengisi opsi select saat halaman dimuat
-        document.addEventListener('DOMContentLoaded', populateSelectOptions);
 
     </script>
 </body>
 </html>
-
